@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PayFlow — Smart UPI Payment System. An academic demo that simulates UPI payments. No real money is transferred.">
+  <meta name="theme-color" content="#0B1020">
+  <title>PayFlow — Smart UPI Payment System (Demo)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%238B5CF6'/%3E%3Cpath d='M10 23V9h7a5 5 0 0 1 0 10h-4' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- Inline SVG icon sprite (one consistent stroke icon style) -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h12v4"/><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M16 13.5h2"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17v.5"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+    <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="12" r="2.5"/><path d="M6 8.5v7M8.3 7.2 15.7 11"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M10 23V9h7a5 5 0 0 1 0 10h-4"/></svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">PayFlow</span>
+          <span class="brand-tag">Smart UPI Payments</span>
+        </span>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <a class="nav-link" href="#overview" data-view-link="overview">
+          <svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span>Overview</span>
+        </a>
+        <a class="nav-link" href="#send" data-view-link="send">
+          <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg><span>Send Money</span>
+        </a>
+        <a class="nav-link" href="#transactions" data-view-link="transactions">
+          <svg class="icon" aria-hidden="true"><use href="#i-list"/></svg><span>Transactions</span>
+        </a>
+        <a class="nav-link" href="#about" data-view-link="about">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>About Project</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="demo-note">
+          <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+          <p>Demo Mode — No Real Money Is Transferred</p>
+        </div>
+        <div class="profile-card">
+          <span class="avatar" aria-hidden="true">DU</span>
+          <span class="profile-text">
+            <span class="profile-name">Demo User</span>
+            <span class="badge badge-demo">DEMO MODE</span>
+          </span>
+        </div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <div class="main-column">
+      <!-- Top navigation -->
+      <header class="topbar">
+        <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation menu">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+        <div class="topbar-titles">
+          <h1 id="page-title">Overview</h1>
+          <p id="page-subtitle" class="muted">Your simulated payment activity</p>
+        </div>
+        <form class="topbar-search" id="topbar-search" role="search">
+          <label for="global-search" class="visually-hidden">Search transactions</label>
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="global-search" placeholder="Search transactions…" autocomplete="off">
+        </form>
+        <span class="badge badge-sim" title="All payments are simulated">
+          <span class="pulse-dot" aria-hidden="true"></span>Simulation Only
+        </span>
+        <span class="avatar avatar-sm" role="img" aria-label="Demo User profile">DU</span>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <!-- ===================== OVERVIEW ===================== -->
+        <section class="view" id="view-overview" data-view="overview" aria-labelledby="welcome-title">
+          <div class="welcome card card-hero">
+            <div>
+              <h2 id="welcome-title">Welcome back, Demo User</h2>
+              <p class="muted">Here's your payment activity at a glance.</p>
+            </div>
+            <a class="btn btn-primary btn-lg" href="#send">
+              <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Make a Payment
+            </a>
+          </div>
+
+          <div class="stats-grid">
+            <article class="card stat-card">
+              <span class="stat-icon stat-violet" aria-hidden="true"><svg class="icon"><use href="#i-wallet"/></svg></span>
+              <div>
+                <h3 class="stat-label">Demo Wallet Balance</h3>
+                <p class="stat-value" id="stat-balance">₹0.00</p>
+                <p class="stat-hint">Simulated funds — not a real balance</p>
+              </div>
+            </article>
+            <article class="card stat-card">
+              <span class="stat-icon stat-indigo" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span>
+              <div>
+                <h3 class="stat-label">Total Transactions</h3>
+                <p class="stat-value" id="stat-total">0</p>
+                <p class="stat-hint" id="stat-total-hint">In your demo history</p>
+              </div>
+            </article>
+            <article class="card stat-card">
+              <span class="stat-icon stat-success" aria-hidden="true"><svg class="icon"><use href="#i-check-circle"/></svg></span>
+              <div>
+                <h3 class="stat-label">Successful Payments</h3>
+                <p class="stat-value" id="stat-success">0</p>
+                <p class="stat-hint" id="stat-sent">₹0.00 sent (simulated)</p>
+              </div>
+            </article>
+            <article class="card stat-card">
+              <span class="stat-icon stat-error" aria-hidden="true"><svg class="icon"><use href="#i-x-circle"/></svg></span>
+              <div>
+                <h3 class="stat-label">Failed Payments</h3>
+                <p class="stat-value" id="stat-failed">0</p>
+                <p class="stat-hint">No money deducted</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <section class="card" aria-labelledby="recent-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="recent-title" class="card-title">Recent Activity</h2>
+                  <p class="muted small">Your five most recent simulated transactions</p>
+                </div>
+                <a class="btn btn-ghost" href="#transactions">View All Transactions
+                  <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                </a>
+              </div>
+              <div id="recent-list"></div>
+            </section>
+
+            <section class="card" aria-labelledby="quick-title">
+              <h2 id="quick-title" class="card-title">Quick Actions</h2>
+              <div class="quick-actions">
+                <a class="quick-action" href="#send">
+                  <span class="stat-icon stat-violet" aria-hidden="true"><svg class="icon"><use href="#i-send"/></svg></span>
+                  <span><strong>Send Money</strong><span class="muted small">Simulate a UPI payment</span></span>
+                </a>
+                <a class="quick-action" href="#transactions">
+                  <span class="stat-icon stat-indigo" aria-hidden="true"><svg class="icon"><use href="#i-list"/></svg></span>
+                  <span><strong>View Transactions</strong><span class="muted small">Search &amp; filter history</span></span>
+                </a>
+                <button type="button" class="quick-action" id="reset-btn">
+                  <span class="stat-icon stat-warning" aria-hidden="true"><svg class="icon"><use href="#i-reset"/></svg></span>
+                  <span><strong>Reset Demo Data</strong><span class="muted small">Restore sample balance &amp; history</span></span>
+                </button>
+              </div>
+              <div class="callout">
+                <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+                <p><strong>Demo Mode — No Real Money Is Transferred.</strong> All recipients, balances and references are fictional.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ===================== SEND MONEY ===================== -->
+        <section class="view" id="view-send" data-view="send" aria-labelledby="send-title" hidden>
+          <div class="send-grid">
+            <section class="card" aria-labelledby="send-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="send-title" class="card-title">Send Money</h2>
+                  <p class="muted small">Enter recipient details to simulate a UPI payment.</p>
+                </div>
+                <span class="badge badge-sim">Simulated</span>
+              </div>
+
+              <div class="contacts" aria-labelledby="contacts-title">
+                <h3 id="contacts-title" class="eyebrow">Recent recipients</h3>
+                <div class="contact-row" id="contact-row"></div>
+              </div>
+
+              <form id="payment-form" novalidate>
+                <div class="field">
+                  <label for="recipient-name">Recipient name</label>
+                  <input type="text" id="recipient-name" name="recipientName" placeholder="e.g. Ananya Rao" autocomplete="off" maxlength="60" aria-describedby="recipient-name-error" required>
+                  <p class="field-error" id="recipient-name-error" role="alert"></p>
+                </div>
+                <div class="field">
+                  <label for="upi-id">Recipient UPI ID</label>
+                  <input type="text" id="upi-id" name="upiId" placeholder="e.g. ananya@okpayflow" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="upi-id-hint upi-id-error" required>
+                  <p class="field-hint" id="upi-id-hint">Format: identifier@handle. Tip: any <code>@declinebank</code> ID demonstrates a declined payment.</p>
+                  <p class="field-error" id="upi-id-error" role="alert"></p>
+                </div>
+                <div class="field">
+                  <label for="amount">Amount (₹)</label>
+                  <div class="input-prefix">
+                    <span aria-hidden="true">₹</span>
+                    <input type="text" id="amount" name="amount" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-describedby="amount-hint amount-error" required>
+                  </div>
+                  <p class="field-hint" id="amount-hint"></p>
+                  <p class="field-error" id="amount-error" role="alert"></p>
+                </div>
+                <div class="field">
+                  <label for="note">Payment note <span class="muted">(optional)</span></label>
+                  <input type="text" id="note" name="note" placeholder="e.g. Lunch share" autocomplete="off" maxlength="120" aria-describedby="note-error">
+                  <p class="field-error" id="note-error" role="alert"></p>
+                </div>
+                <div class="form-actions">
+                  <button type="reset" class="btn btn-ghost" id="clear-form-btn">Clear</button>
+                  <button type="submit" class="btn btn-primary">Review Payment
+                    <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                  </button>
+                </div>
+              </form>
+            </section>
+
+            <aside class="card side-panel" aria-labelledby="rules-title">
+              <p class="eyebrow">Available demo balance</p>
+              <p class="side-balance" id="send-balance">₹0.00</p>
+              <h2 id="rules-title" class="card-title">Simulated payment rules</h2>
+              <ul class="rule-list">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span id="rule-limit">Maximum per payment</span></li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Amount must not exceed your demo balance</span></li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Up to 2 decimal places; minimum ₹1.00</span></li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>UPI ID in the simple demo format <code>name@handle</code></span></li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg><span><code>@declinebank</code> IDs are declined by the simulated bank — no deduction</span></li>
+              </ul>
+              <div class="callout callout-warning">
+                <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+                <p>PayFlow never asks for a UPI PIN, OTP, password or card details.</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ===================== TRANSACTIONS ===================== -->
+        <section class="view" id="view-transactions" data-view="transactions" aria-labelledby="txn-title" hidden>
+          <section class="card">
+            <div class="card-header">
+              <div>
+                <h2 id="txn-title" class="card-title">Transaction History</h2>
+                <p class="muted small" id="txn-count" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="field field-inline grow">
+                <label for="txn-search" class="visually-hidden">Search by recipient, UPI ID or reference</label>
+                <div class="input-icon">
+                  <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+                  <input type="search" id="txn-search" placeholder="Search recipient, UPI ID or reference" autocomplete="off">
+                </div>
+              </div>
+              <div class="segmented" role="group" aria-label="Filter by status">
+                <button type="button" class="seg-btn" data-status="ALL" aria-pressed="true">All</button>
+                <button type="button" class="seg-btn" data-status="SUCCESS" aria-pressed="false">Success</button>
+                <button type="button" class="seg-btn" data-status="FAILED" aria-pressed="false">Failed</button>
+              </div>
+              <div class="field field-inline">
+                <label for="txn-sort" class="visually-hidden">Sort order</label>
+                <select id="txn-sort">
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-ghost" id="clear-filters-btn">Clear Filters</button>
+            </div>
+
+            <div id="txn-list"></div>
+          </section>
+        </section>
+
+        <!-- ===================== ABOUT ===================== -->
+        <section class="view" id="view-about" data-view="about" aria-labelledby="about-title" hidden>
+          <div class="card card-hero about-hero">
+            <div>
+              <p class="eyebrow">Agile Software Development · FA2</p>
+              <h2 id="about-title">PayFlow — Smart UPI Payment System</h2>
+              <p class="muted">Payments made simple. Control made smarter.</p>
+            </div>
+          </div>
+
+          <div class="callout callout-warning about-warning">
+            <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+            <p><strong>Simulation notice:</strong> PayFlow is an academic demonstration. Every payment is simulated in the browser; no bank, UPI network or payment provider is contacted and no actual money is transferred.</p>
+          </div>
+
+          <div class="about-grid">
+            <article class="card">
+              <h3 class="card-title">Objective</h3>
+              <p class="muted">Demonstrate a small but complete payment web application, built in iterations and delivered through an automated CI/CD pipeline. It continues the online-payments domain of our earlier UPI case study with independent branding and features.</p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Simulated payment workflow</h3>
+              <ol class="steps">
+                <li>Enter recipient name, UPI ID, amount and an optional note.</li>
+                <li>Details are validated in JavaScript against the demo rules.</li>
+                <li>Review the confirmation panel and confirm the demo payment.</li>
+                <li>A reference is generated, the result is shown and history, balance and statistics update together.</li>
+              </ol>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Features implemented</h3>
+              <ul class="bullets">
+                <li>Dashboard with live balance and transaction statistics</li>
+                <li>Validated Send Money form with field-level errors</li>
+                <li>Confirmation, processing and success/failure states</li>
+                <li>Searchable, filterable, sortable transaction history</li>
+                <li>Transaction detail view and recent recipients</li>
+                <li>Persistent demo data with confirmed reset</li>
+                <li>Responsive, keyboard-accessible interface</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Technology stack</h3>
+              <ul class="chips">
+                <li>HTML5</li><li>CSS3</li><li>Vanilla JavaScript (ES modules)</li><li>Node.js &amp; npm</li>
+                <li>node:test</li><li>ESLint</li><li>Git &amp; GitHub</li><li>GitHub Actions</li><li>GitHub Pages</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Agile process</h3>
+              <p class="muted">Work was organised as a product backlog of user stories (send money, validate details, view history, reset demo). Each short sprint delivered a working increment, reviewed against acceptance criteria that became automated unit tests. Continuous integration gives fast feedback on every push.</p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">CI/CD pipeline</h3>
+              <ol class="pipeline" aria-label="Pipeline stages">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-git"/></svg>GitHub</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg>Build</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>Automated Testing</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>Code Quality Check</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Deployment</li>
+              </ol>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer muted small">
+        PayFlow · Academic demo · Demo Mode — No Real Money Is Transferred
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===================== DIALOGS ===================== -->
+  <dialog class="modal" id="confirm-dialog" aria-labelledby="confirm-title">
+    <div class="modal-body" id="confirm-content">
+      <div class="modal-head">
+        <h2 id="confirm-title">Confirm demo payment</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Cancel and close">
+          <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <p class="confirm-amount" id="confirm-amount">₹0.00</p>
+      <dl class="detail-list">
+        <div><dt>Recipient</dt><dd id="confirm-name"></dd></div>
+        <div><dt>UPI ID</dt><dd id="confirm-upi"></dd></div>
+        <div><dt>Note</dt><dd id="confirm-note"></dd></div>
+        <div><dt>Balance after</dt><dd id="confirm-balance-after"></dd></div>
+      </dl>
+      <div class="callout">
+        <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+        <p>This is a <strong>simulated</strong> payment. No real money will be transferred.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-pay-btn">Confirm Demo Payment</button>
+      </div>
+    </div>
+    <div class="modal-body processing" id="processing-content" hidden aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <p class="processing-title">Processing simulated payment…</p>
+      <p class="muted small">Please wait. No real money is being transferred.</p>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="result-dialog" aria-labelledby="result-title">
+    <div class="modal-body result">
+      <span class="result-icon" id="result-icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>
+      <p class="eyebrow">Simulated result</p>
+      <h2 id="result-title">Payment Successful</h2>
+      <p class="confirm-amount" id="result-amount">₹0.00</p>
+      <p class="muted small" id="result-reason"></p>
+      <dl class="detail-list">
+        <div><dt>Recipient</dt><dd id="result-name"></dd></div>
+        <div><dt>Status</dt><dd id="result-status"></dd></div>
+        <div><dt>Reference</dt><dd id="result-ref" class="mono"></dd></div>
+        <div><dt>Date &amp; time</dt><dd id="result-date"></dd></div>
+      </dl>
+      <p class="sim-label">Simulated transaction — no real money was transferred.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="result-history-btn">View Transaction History</button>
+        <button type="button" class="btn btn-primary" id="result-dashboard-btn">Back to Dashboard</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="detail-dialog" aria-labelledby="detail-title">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h2 id="detail-title">Transaction details</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close transaction details">
+          <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <p class="confirm-amount" id="detail-amount"></p>
+      <dl class="detail-list" id="detail-list"></dl>
+      <p class="sim-label">Simulated transaction — no real money was transferred.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" data-close>Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="reset-dialog" aria-labelledby="reset-title">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h2 id="reset-title">Reset demo data?</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Cancel reset">
+          <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <p class="muted">This restores the original fictional balance and sample transactions. Any demo payments you made will be removed. This only affects data stored in this browser.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        <button type="button" class="btn btn-danger" id="reset-confirm-btn">Reset Demo Data</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript>
+    <p class="noscript">PayFlow needs JavaScript enabled to run the payment simulation.</p>
+  </noscript>
+</body>
+</html>

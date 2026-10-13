@@ -1,0 +1,25 @@
+{
+  "name": "payflow",
+  "version": "1.0.0",
+  "description": "PayFlow — Smart UPI Payment System. Academic demo that simulates UPI payments; no real money is transferred.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "preview": "node scripts/serve.js dist",
+    "test": "node --test",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "check": "npm run build && npm test && npm run lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0"
+  }
+}
